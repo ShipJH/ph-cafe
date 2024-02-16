@@ -1,0 +1,19 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mariadb://localhost:3306/ph-cafe?allowPublicKeyRetrieval=true&useSSL=false
+    password: root
+    username: root
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    defer-datasource-initialization: true
+    show-sql: true
+    generate-ddl: true
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
