@@ -9,7 +9,7 @@ class ResponseDto {
 
     data class Meta(
         val code: Int,
-        val message: String
+        val message: String? = "OK"
     )
 
 }

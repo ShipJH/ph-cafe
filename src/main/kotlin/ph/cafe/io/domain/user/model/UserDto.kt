@@ -15,4 +15,19 @@ class UserDto {
         }
     }
 
+    data class SignUpResponse(
+        val id: Long,
+        val phoneNumber: String,
+        val role: UserEnum.Role
+    )
+
+    data class LoginRequest(
+        @field:NotBlank val phoneNumber: String,
+        @field:NotBlank val password: String
+    ) {
+        fun getRemoveDashPhoneNumber(): String {
+            return this.phoneNumber.replace(DASH, "")
+        }
+    }
+
 }

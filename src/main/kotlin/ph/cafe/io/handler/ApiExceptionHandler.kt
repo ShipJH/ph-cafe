@@ -63,18 +63,6 @@ class ApiExceptionHandler: ResponseEntityExceptionHandler() {
         return handleExceptionInternal(ex, body, headers, status, request)
     }
 
-//    @ExceptionHandler(BaseException::class)
-//    fun handle(ex: BaseException): ResponseEntity<Any> {
-//        val apiError = ApiError(
-//            status = ex.exceptionCode.status,
-//            statusCode = ex.exceptionCode.status.value(),
-//            errorType = ex.messageType,
-//            errorMessage = ex.message,
-//        )
-//        return ResponseEntity(apiError, HttpStatus.INTERNAL_SERVER_ERROR)
-//    }
-//
-//
     @ExceptionHandler(PasswordException::class)
     fun handle(ex: PasswordException): ResponseEntity<Any> {
         val body = ResponseDto.Response(
@@ -99,5 +87,16 @@ class ApiExceptionHandler: ResponseEntityExceptionHandler() {
         return ResponseEntity(body, ex.exceptionCode.status)
     }
 
+    @ExceptionHandler(BaseException::class)
+    fun handle(ex: BaseException): ResponseEntity<Any> {
+        val body = ResponseDto.Response(
+            meta = ResponseDto.Meta(
+                code = ex.exceptionCode.status.value(),
+                message = ex.exceptionCode.msg
+            ),
+            data = null
+        )
+        return ResponseEntity(body, ex.exceptionCode.status)
+    }
 
 }

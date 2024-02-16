@@ -13,7 +13,10 @@ class UserEntity(
     var password: String,
 
     @Enumerated(value = EnumType.STRING)
-    var role: UserEnum.Role = UserEnum.Role.OWNER
+    var role: UserEnum.Role = UserEnum.Role.OWNER,
+
+    var isOnLine: Boolean = false
+
 ): BaseEntity() {
 
     @Id
