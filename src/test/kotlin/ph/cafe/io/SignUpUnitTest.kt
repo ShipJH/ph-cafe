@@ -7,6 +7,60 @@ import ph.cafe.io.common.Constants.EMPTY
 
 internal class SignUpUnitTest: BehaviorSpec({
 
+    // @NotBlank 설정하여 발생하지 않음.
+    Given("핸드폰 번호 비었을 경우") {
+        val emptyPhoneNumber = ""
+        val nullPhoneNumber = null
+        When("핸드폰 번호가 빈값 을 넣으면.") {
+            Then("IllegalArgumentException 에러가 발생한다.") {
+                assertThrows<IllegalArgumentException> { phoneNumberDegree(emptyPhoneNumber) }
+            }
+        }
+
+        When("핸드폰 번호에 null 을 넣으면.") {
+            Then("IllegalArgumentException 에러가 발생한다.") {
+                assertThrows<IllegalArgumentException> { phoneNumberDegree(nullPhoneNumber) }
+            }
+        }
+    }
+    
+    Given("핸드폰 번호에 - 가 포함되어 있을 경우") {
+        val phoneNumber = "010-1234-5678"
+        When("핸드폰 번호에 - 를 넣으면") {
+            Then("true 를 반환한다.") {
+                phoneNumberDegree(phoneNumber) shouldBe true
+            }
+        }
+    }
+    
+    Given("핸드폰 번호에 - 가 포함되어 있지 않을 경우") {
+        val phoneNumber = "01012345678"
+        When("번호만 넣으면") {
+            Then("true 를 반환한다.") {
+                phoneNumberDegree(phoneNumber) shouldBe true
+            }
+        }
+    }
+    
+    Given("핸드폰 번호에 다른 문자가 포함되어 있을 경우") {
+        val phoneNumber = "010-1234-568a"
+        When("번호 뒤에 영문 a를 넣으면") {
+            Then("false 를 반환한다.") {
+                phoneNumberDegree(phoneNumber) shouldBe false
+            }
+        }
+    }
+    
+    Given("핸드폰 번호 앞자리에 유효한 번호가 아닌 다른 번호가 포함되어 있을 경우") {
+        val phoneNumber = "111-1234-5678"
+        When("앞자리 111을 넣으면") {
+            Then("false 를 반환한다.") {
+                phoneNumberDegree(phoneNumber) shouldBe false
+            }
+        }
+    }
+
+
 
     // @NotBlank 설정하여 발생하지 않음.
     Given("패스워드가 비었을 경우") {
@@ -200,6 +254,16 @@ internal class SignUpUnitTest: BehaviorSpec({
     }
 
 })
+
+fun phoneNumberDegree(phoneNumber: String?): Boolean {
+    if(phoneNumber.isNullOrEmpty()) {
+        throw IllegalArgumentException("핸드폰 번호가 비었습니다.")
+    }
+
+    val valid = "^01(?:0|1|[6-9])-?(\\d{3}|\\d{4})-?(\\d{4})$"
+    return phoneNumber.matches(Regex(valid)) ?: false
+}
+
 
 fun passwordPasswordDegree(pw: String?): Pair<PasswordDegree, Int> {
     if(pw.isNullOrEmpty()) {

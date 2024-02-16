@@ -2,9 +2,10 @@ package ph.cafe.io.domain.user
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ph.cafe.io.PasswordCheckUtils.passwordValidCheck
+import ph.cafe.io.utils.ValidUtils.passwordValidCheck
 import ph.cafe.io.domain.user.model.UserDto
 import ph.cafe.io.domain.user.model.UserEntity
+import ph.cafe.io.utils.ValidUtils.phoneNumberValidCheck
 import java.sql.SQLException
 
 @Service
@@ -12,6 +13,7 @@ class UserService(private val userRepository: UserRepository) {
 
     @Transactional
     fun signUp(request: UserDto.SignUpRequest) {
+        phoneNumberValidCheck(request.phoneNumber)
         passwordValidCheck(request.password, request.passwordCheck)
         userRepository.findByPhoneNumber(request.getRemoveDashPhoneNumber()).ifPresent {
             throw IllegalArgumentException("이미 가입된 번호입니다.")
