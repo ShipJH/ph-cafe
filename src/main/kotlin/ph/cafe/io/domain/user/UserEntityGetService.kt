@@ -21,11 +21,8 @@ class UserEntityGetService {
     fun loginUserCheck(requestUserId: Long) {
         val userEntity = getUserEntity()
         if(userEntity.id != requestUserId) {
-            throw BaseException(ExceptionCode.USER_NOT_FOUND)
+            throw BaseException(ExceptionCode.USER_NOT_AUTHORIZED)
         }
     }
-
-
-
 
 }

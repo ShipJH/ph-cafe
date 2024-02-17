@@ -1,5 +1,6 @@
 package ph.cafe.io.handler
 
+import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
@@ -15,8 +16,12 @@ import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import ph.cafe.io.common.ResponseDto
 import ph.cafe.io.exception.BaseException
+import ph.cafe.io.exception.ExceptionCode
 import ph.cafe.io.exception.PasswordException
 import ph.cafe.io.exception.PhoneNumberException
+import java.time.format.DateTimeParseException
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 @ControllerAdvice
 class ApiExceptionHandler: ResponseEntityExceptionHandler() {
@@ -46,19 +51,40 @@ class ApiExceptionHandler: ResponseEntityExceptionHandler() {
         status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any>? {
-        val message = when (val cause = ex.cause) {
+        var message = ""
+        var data = ""
+        when (val cause = ex.cause) {
             is MismatchedInputException -> {
-                cause.path.joinToString(",") { it.fieldName }
-                    .let { "필수값이 누락되었습니다. 필수값을 확인해주세요. [$it]" }
+                message = cause.path.joinToString(",") { it.fieldName }
+                    .let { "${ExceptionCode.NOT_VALID.msg} [$it]" }
+
+                if(cause.message != null && cause.message!!.contains(("Enum class"))) {
+                    val pattern = Pattern.compile("\\[(.*?)\\]")
+                    val matcher: Matcher = pattern.matcher(cause.message!!)
+                    if (matcher.find()) {
+                        val match = matcher.group(1)
+                        data = match
+                    }
+                }
             }
-            else -> "예기치 않은 오류 ${cause?.javaClass?.name} ${ex.localizedMessage}"
+            is JsonMappingException -> {
+                message = if(cause.cause is DateTimeParseException) {
+                    ExceptionCode.NOT_VALID_FORMAT_LDT.msg
+                } else {
+                    ExceptionCode.NOT_VALID_JSON.msg
+                }
+            }
+            else -> {
+                message = "예기치 않은 오류 ${cause?.javaClass?.name} ${ex.localizedMessage}"
+            }
         }
+
         val body = ResponseDto.Response(
             meta = ResponseDto.Meta(
                 code = HttpStatus.BAD_REQUEST.value(),
                 message = message
             ),
-            data = null
+            data = if(data == "") null else data
         )
         return handleExceptionInternal(ex, body, headers, status, request)
     }
