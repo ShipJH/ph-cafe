@@ -15,12 +15,16 @@ class UserEntity(
     @Enumerated(value = EnumType.STRING)
     var role: UserEnum.Role = UserEnum.Role.OWNER,
 
-    var isOnLine: Boolean = false
-
 ): BaseEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
+
+    @Column(length = 1, nullable = false)
+    var isOnLine: Boolean = false
+
+    @Column(length = 255)
+    var refreshToken: String = ""
 
 }

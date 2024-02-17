@@ -29,6 +29,11 @@ class UserController(
         return userService.signOut()
     }
 
+    @PostMapping("/reissue")
+    fun reissue(@RequestBody @Valid request: UserDto.ReissueRequest): ResponseDto.Response {
+        return userService.reissue(request)
+    }
+
     @GetMapping("testUser")
     fun testUser(): String {
         return "OK~~~~"

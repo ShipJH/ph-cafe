@@ -17,7 +17,8 @@ class SecurityConfig(
 
     private val AUTH_WHITE_URL = arrayOf(
         "/sign-up",
-        "/sign-in"
+        "/sign-in",
+        "/reissue"
     )
 
     @Bean

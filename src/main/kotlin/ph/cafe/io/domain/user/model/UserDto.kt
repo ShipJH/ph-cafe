@@ -30,4 +30,8 @@ class UserDto {
         }
     }
 
+    data class ReissueRequest(
+        @field:NotBlank val refreshToken: String
+    )
+
 }

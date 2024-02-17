@@ -38,12 +38,15 @@
    
    2. 로그아웃 기능 추가.
    POST /sign-out
-   Headers Authorization: Bearer {token}
+   Headers Authorization: bearer {token}
    {}
    
    * 레디스를 따로 적용하진 않았습니다.
    ```
    
+
+
+
 
 
 

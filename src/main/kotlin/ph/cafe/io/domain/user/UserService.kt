@@ -65,15 +65,20 @@ class UserService(private val userRepository: UserRepository,
         if (!passwordEncode.passwordEncoder().matches(request.password, userEntity.password)) {
             throw BaseException(ExceptionCode.NOT_MATCH_PASSWORD)
         }
-        userEntity.isOnLine = true
-        userRepository.save(userEntity)
         try {
-            val authentication = UsernamePasswordAuthenticationToken(request.getRemoveDashPhoneNumber(), request.password) // 유저 검증시 ID(username)과 password를 세팅한다. 이때에 시큐리티의 UserDetailsService를 구현해두면 자동으로 처리하게 된다.
+            val authentication = UsernamePasswordAuthenticationToken(request.getRemoveDashPhoneNumber(), request.password)
+
+            val jwtToken = jwtProvider.createJwtToken(userEntity, authentication)
+
+            userEntity.isOnLine = true
+            userEntity.refreshToken = jwtToken.refreshToken
+            userRepository.save(userEntity)
+
             return ResponseDto.Response(
                 meta = ResponseDto.Meta(
                     code = HttpStatus.OK.value(),
                 ),
-                data = jwtProvider.createJwtToken(userEntity, authentication)
+                data = jwtToken
             )
         } catch (e: Exception) {
             throw BaseException(ExceptionCode.INTERNAL_SERVER_ERROR)
@@ -91,6 +96,30 @@ class UserService(private val userRepository: UserRepository,
                     code = HttpStatus.OK.value(),
                 ),
                 data = null
+            )
+        } catch (e: Exception) {
+            throw BaseException(ExceptionCode.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    @Transactional
+    fun reissue(request: UserDto.ReissueRequest): ResponseDto.Response {
+        try {
+            val authentication = jwtProvider.getAuthentication(request.refreshToken)
+            val userEntity = authentication.second
+            if(request.refreshToken.replace("bearer ", "") != userEntity.refreshToken) {
+                throw BaseException(ExceptionCode.NOT_MATCH_REFRESH_TOKEN)
+            }
+            val jwtToken = jwtProvider.createJwtToken(authentication.second, authentication.first)
+
+            userEntity.refreshToken = jwtToken.refreshToken
+            userRepository.save(userEntity)
+
+            return ResponseDto.Response(
+                meta = ResponseDto.Meta(
+                    code = HttpStatus.OK.value(),
+                ),
+                data = jwtToken
             )
         } catch (e: Exception) {
             throw BaseException(ExceptionCode.INTERNAL_SERVER_ERROR)
