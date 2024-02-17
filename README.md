@@ -1,6 +1,10 @@
-# 
-
-# 
+## 환경 
+- spring boot 3.2.2
+- jdk 17
+- kotlin 1.7.22
+- gradle
+- mysql
+- jpa
 
 ## 요구사항 & 구현 
 
@@ -108,15 +112,15 @@
    ```
    
 4. 그 외 구현
-   ```
-   언어에 상관없이 Docker를 기반으로 서버를 실행 할 수 있도록 작성해주세요.
-   DB관련 테이블에 대한 DDL 파일을 소스 디렉토리 안에 넣어주세요.
-   테스트 케이스를 작성해주세요
-   JWT 토큰을 발행해서 인증을 제어하는 방식으로 구현해주세요
-   각 API는 아래의 custom response json 형식으로 반환되어야 합니다.(204 No Content 제외)
+   
+   언어에 상관없이 Docker를 기반으로 서버를 실행 할 수 있도록 작성해주세요.  
+   DB관련 테이블에 대한 DDL 파일을 소스 디렉토리 안에 넣어주세요.   [DDL 링크](https://github.com/ShipJH/ph-cafe/blob/main/DB-DDL.md)  
+   테스트 케이스를 작성해주세요  
+   JWT 토큰을 발행해서 인증을 제어하는 방식으로 구현해주세요  
+   각 API는 아래의 custom response json 형식으로 반환되어야 합니다.(204 No Content 제외)    
    
    위 사항을 지켜 작성하였습니다.
-   ```
+   
 
 
   
