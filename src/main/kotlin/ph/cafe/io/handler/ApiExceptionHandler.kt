@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import ph.cafe.io.common.Constants.COMMA
+import ph.cafe.io.common.Constants.EMPTY
 import ph.cafe.io.common.ResponseDto
 import ph.cafe.io.exception.BaseException
 import ph.cafe.io.exception.ExceptionCode
@@ -49,11 +51,11 @@ class ApiExceptionHandler: ResponseEntityExceptionHandler() {
         status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any>? {
-        var message = ""
-        var data = ""
+        var message = EMPTY
+        var data = EMPTY
         when (val cause = ex.cause) {
             is MismatchedInputException -> {
-                message = cause.path.joinToString(",") { it.fieldName }
+                message = cause.path.joinToString(COMMA) { it.fieldName }
                     .let { "${ExceptionCode.NOT_VALID.msg} [$it]" }
 
                 if(cause.message != null && cause.message!!.contains(("Enum class"))) {
@@ -82,7 +84,7 @@ class ApiExceptionHandler: ResponseEntityExceptionHandler() {
                 code = HttpStatus.BAD_REQUEST.value(),
                 message = message
             ),
-            data = if(data == "") null else data
+            data = if(data == EMPTY) null else data
         )
         return handleExceptionInternal(ex, body, headers, status, request)
     }
