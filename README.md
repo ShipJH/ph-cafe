@@ -222,6 +222,18 @@ src
 
 ```
 
+| 폴더명/파일명  	           | 설명	                 | 비고            |
+|----------------------|---------------------|---------------|
+| PhcafeApplication.kt | 메인 메서드              | 최초 실행 부분      |
+| common  	            | 공통으로 쓰는 객체          |               |
+| config  	            | 설정 파일을 모아두었음 	      | 		            |
+| config/security      | spring security 설정	 | 인증/인가를 담당 	   |
+| config/security/jwt  | jwt 관련 부분           |               |
+| domain               | 실제 API 구성           | 각각 도메인에 맞게 구성 |
+| exception            | 공통적으로 에러 처리를 담당     |  |
+| handler              | 핸들러를 담당             |  |
+| utils                | 각종 필요한 유틸           |  |
+
 
 
 
