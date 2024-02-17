@@ -34,10 +34,4 @@ class UserController(
         return userService.reissue(request)
     }
 
-    @GetMapping("testUser")
-    fun testUser(): String {
-        return "OK~~~~"
-    }
-
-
 }

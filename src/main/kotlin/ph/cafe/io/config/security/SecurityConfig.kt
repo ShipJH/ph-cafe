@@ -36,7 +36,7 @@ class SecurityConfig(
             }
             .authorizeHttpRequests {
                 it
-                .requestMatchers("/testUser").hasRole("OWNER")
+                .requestMatchers("/product").hasRole("OWNER")
                 .requestMatchers(*AUTH_WHITE_URL).permitAll()
             }
             .sessionManagement {
