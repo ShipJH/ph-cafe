@@ -2,10 +2,27 @@ package ph.cafe.io.domain.product.model
 
 import jakarta.validation.constraints.NotBlank
 import org.jetbrains.annotations.NotNull
+import ph.cafe.io.common.BaseEnum
+import ph.cafe.io.common.BaseListRequest
+import ph.cafe.io.common.Constants.EMPTY
+import ph.cafe.io.common.Constants.SPACE
 import ph.cafe.io.domain.user.model.UserEntity
+import ph.cafe.io.utils.StringUtils
 import java.time.LocalDateTime
 
 class ProductDto {
+
+    data class Request(
+        val name: String?,
+    ): BaseListRequest() {
+
+        fun deleteSpaceName(): String? {
+            return if(this.name != null) this.name.replace(SPACE, EMPTY) else null
+        }
+        fun nameType(): BaseEnum.Language? {
+            return if(this.name != null) StringUtils.languageCheck(this.name) else null
+        }
+    }
 
     data class Response(
         val id: Long,
@@ -17,6 +34,12 @@ class ProductDto {
         val barcode: String,
         val expirationDate: LocalDateTime,
         val size: ProductEnum.Size
+    )
+
+    data class ListResponse(
+        val products: MutableList<Response>,
+        val isNextPage: Boolean,
+        val lastId: Long
     )
 
     data class SaveRequest(
@@ -38,6 +61,7 @@ class ProductDto {
             barcode = barcode,
             expirationDate = expirationDate,
             size = size,
+            initial = StringUtils.makeInitial(name),
             user = userEntity
         )
     }
@@ -63,6 +87,7 @@ class ProductDto {
                 barcode = this.barcode ?: productEntity.barcode,
                 expirationDate = this.expirationDate ?: productEntity.expirationDate,
                 size = this.size ?: productEntity.size,
+                initial = StringUtils.makeInitial(this.name ?: productEntity.initial),
                 user = productEntity.user
             )
             updateProductEntity.id = productEntity.id

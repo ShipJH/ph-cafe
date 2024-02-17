@@ -8,7 +8,10 @@ plugins {
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
     kotlin("plugin.allopen") version kotlinVersion
+    kotlin("kapt") version "1.7.21"
 }
+
+apply(plugin = "kotlin-kapt") //querydsl
 
 group = "ph-cafe-io"
 version = "0.0.1-SNAPSHOT"
@@ -68,6 +71,10 @@ dependencies {
     implementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
     testImplementation("io.mockk:mockk:1.13.2")
     implementation("com.ninja-squad:springmockk:3.0.1")
+
+    //query dsl
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 
 }
 

@@ -35,6 +35,9 @@ class ProductEntity(
     @Enumerated(EnumType.STRING)
     var size: ProductEnum.Size,
 
+    @Column(length = 50, nullable = false)
+    var initial: String,
+
     @ManyToOne(fetch = FetchType.LAZY)
     var user: UserEntity
 

@@ -8,12 +8,14 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import ph.cafe.io.common.BaseEnum
 import ph.cafe.io.domain.product.ProductController
 import ph.cafe.io.domain.product.ProductRepository
-import ph.cafe.io.domain.product.ProductService
+import ph.cafe.io.domain.product.model.ProductDto
 import ph.cafe.io.domain.product.model.ProductEntity
 import ph.cafe.io.domain.product.model.ProductEnum
 import ph.cafe.io.domain.user.model.UserEntity
+import ph.cafe.io.utils.StringUtils
 import java.time.LocalDateTime
 import java.util.*
 
@@ -22,7 +24,6 @@ internal class ProductTest: BehaviorSpec() {
 
     init {
         val productRepository = mockk<ProductRepository>()
-        val productService = ProductService(productRepository, mockk())
 
         afterContainer {
             clearAllMocks()
@@ -74,17 +75,119 @@ internal class ProductTest: BehaviorSpec() {
                 Then("상품 수정 확인 - 이름") {
                     withContext(Dispatchers.IO) {
                         productRepository.save(productEntity)
-                    }.name shouldBe "디카페인 아메리카노"
+                    }.name shouldBe updateProductEntity.name
                 }
                 Then("상품 수정 확인 - 가격") {
                     withContext(Dispatchers.IO) {
                         productRepository.save(productEntity)
-                    }.price shouldBe 5500
+                    }.price shouldBe updateProductEntity.price
+                }
+            }
+        }
+
+        Given("상품 삭제") {
+
+            every { productRepository.findById(1) } returns Optional.of(productEntity)
+            every { productRepository.delete(productEntity) } returns Unit
+
+            When("상품 삭제 요청") {
+                Then("상품 삭제 성공") {
+                    withContext(Dispatchers.IO) {
+                        productRepository.delete(productEntity)
+                    } shouldBe Unit
                 }
             }
         }
 
 
+        Given("상품명 초성변경 (한글)") {
+            val name = "아메리카노"
+            When("한국어 초성으로 변경하면") {
+                val transferString = StringUtils.makeInitial(name)
+                Then("초성으로 변경되는지 확인") {
+                    transferString shouldBe "ㅇㅁㄹㅋㄴ"
+                }
+            }
+        }
+
+        Given("상품명 초성변경 (한글 - 띄어쓰기)") {
+            val name = "아이스 아메리카노"
+            When("한국어 초성으로 변경하면") {
+                val transferString = StringUtils.makeInitial(name)
+                Then("공백없는 초성으로 변경되는지 확인") {
+                    transferString shouldBe "ㅇㅇㅅㅇㅁㄹㅋㄴ"
+                }
+            }
+        }
+
+        Given("상품명 초성변경 (영어)") {
+            val name = "ICE AMERICANO"
+            When("영어를 초성으로 변경하면") {
+                val transferString = StringUtils.makeInitial(name)
+                Then("영어 그대로 나오는지 확인") {
+                    transferString shouldBe "ICE AMERICANO"
+                }
+            }
+        }
+
+        Given("상품명 초성 변경 (영어+한글)") {
+            val name = "아이스 아메리카노 SAMLL"
+            When("영어+한글을 초성으로 변경하면") {
+                val transferString = StringUtils.makeInitial(name)
+                Then("SMALL이(엉어가) 없는 초성으로 나오는지 확인") {
+                    transferString shouldBe "ㅇㅇㅅㅇㅁㄹㅋㄴ"
+                }
+            }
+        }
+
+        Given("상품명 초성 변경 (숫자)") {
+            val name = "1"
+            When("숫자로 변경하면") {
+                val transferString = StringUtils.makeInitial(name)
+                Then("숫자 그대로 나오는지 확인") {
+                    transferString shouldBe "1"
+                }
+            }
+        }
+
+        Given("상품명의 리퀘스트 타입을 확인 (한국어)") {
+            val request = ProductDto.Request(
+                name = "아메리카노"
+            )
+            When("리퀘스트 타입이 한국어인지 확인") {
+                val type = request.nameType()
+
+                Then("KOREAN 타입 확인") {
+                    type shouldBe BaseEnum.Language.KOREAN
+                }
+            }
+        }
+
+        Given("상품명의 리퀘스트 타입을 확인 (영어)") {
+            val request = ProductDto.Request(
+                name = "ICE AMERICANO"
+            )
+            When("리퀘스트 타입이 영어인지 확인") {
+                val type = request.nameType()
+
+                Then("KOREAN 타입 확인") {
+                    type shouldBe BaseEnum.Language.ENGLISH
+                }
+            }
+        }
+
+        Given("상품명의 리퀘스트 타입을 확인 (한국어 초성)") {
+            val request = ProductDto.Request(
+                name = "ㅇㅁㄹㅋㄴ"
+            )
+            When("리퀘스트 타입이 한국어 초성인지 확인") {
+                val type = request.nameType()
+
+                Then("KOREAN_INITIAL 타입 확인") {
+                    type shouldBe BaseEnum.Language.KOREAN_INITIAL
+                }
+            }
+        }
     }
 
     companion object {
@@ -97,6 +200,7 @@ internal class ProductTest: BehaviorSpec() {
             barcode = "1234567890",
             expirationDate = LocalDateTime.now(),
             size = ProductEnum.Size.SMALL,
+            initial = "ㅇㅁㄹㅋㄴ",
             user = UserEntity(
                 phoneNumber = "01055002890",
                 password = "1234",
@@ -112,6 +216,7 @@ internal class ProductTest: BehaviorSpec() {
             barcode = "888777666555444",
             expirationDate = LocalDateTime.now(),
             size = ProductEnum.Size.LARGE,
+            initial = "ㄷㅋㅍㅇㄴ",
             user = UserEntity(
                 phoneNumber = "01055002890",
                 password = "1234",

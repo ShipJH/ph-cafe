@@ -17,13 +17,13 @@ class ProductController(
 ) {
 
     @GetMapping("/product")
-    fun getProduct(): String {
-        return "product"
+    fun getProductList(request: ProductDto.Request): ResponseDto.Response {
+        return productService.getProductList(request)
     }
 
     @GetMapping("/product/{id}")
-    fun getProductById(@PathVariable("id") productId: Long): String {
-        return "product"
+    fun getProductById(@PathVariable("id") productId: Long): ResponseDto.Response {
+        return productService.getProductById(productId)
     }
 
     @PostMapping("/product")

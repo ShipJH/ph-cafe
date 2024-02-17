@@ -5,11 +5,9 @@ import java.time.format.DateTimeFormatterBuilder
 
 object Constants {
     const val DASH = "-"
-    const val UBAR = "_"
-    const val VBAR = "|"
-    const val COMMA = ","
     const val EMPTY = ""
     const val SPACE = " "
+    const val SPACE_CHAR = ' '
     const val LEFT_SQUARE_BRAKETS = "["
     const val RIGHT_SQUARE_BRAKETS = "]"
 
@@ -22,4 +20,5 @@ object Constants {
         .appendOptional(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
         .toFormatter();
 
+    val KOREAN_INITIAL_ARRAY = arrayOf('ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ')
 }

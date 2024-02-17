@@ -261,7 +261,7 @@ fun phoneNumberDegree(phoneNumber: String?): Boolean {
     }
 
     val valid = "^01(?:0|1|[6-9])-?(\\d{3}|\\d{4})-?(\\d{4})$"
-    return phoneNumber.matches(Regex(valid)) ?: false
+    return phoneNumber.matches(Regex(valid))
 }
 
 
