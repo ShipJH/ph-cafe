@@ -2,7 +2,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:mysql://localhost:3306/ph-cafe?useSSL=false&characterEncoding=UTF-8
+    url: jdbc:mysql://127.0.0.1:3306/ph-cafe?useSSL=false
     password: root
     username: root
     driver-class-name: com.mysql.cj.jdbc.Driver

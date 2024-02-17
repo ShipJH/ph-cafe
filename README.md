@@ -114,16 +114,26 @@
 4. 그 외 구현
    
    언어에 상관없이 Docker를 기반으로 서버를 실행 할 수 있도록 작성해주세요.  
-   DB관련 테이블에 대한 DDL 파일을 소스 디렉토리 안에 넣어주세요.   [DDL 링크](https://github.com/ShipJH/ph-cafe/blob/main/DB-DDL.md)  
-   테스트 케이스를 작성해주세요  
-   JWT 토큰을 발행해서 인증을 제어하는 방식으로 구현해주세요  
-   각 API는 아래의 custom response json 형식으로 반환되어야 합니다.(204 No Content 제외)    
-   
-   위 사항을 지켜 작성하였습니다.
-   
+   간단하게 Dockerfile 작성하였습니다. 
+   소스 상위에서 아래와 같이 실행하시면 됩니다.
+   ```
+   $ gradle clean build
+   $ docker build -t ph-app .
+   $ docker run -p 8080:8080 ph-app 
 
-
-  
+   위와 같이 실행하시면 됩니다. 
+   
+   mysql이 설치되어 있지 않다면 에러가 발생할 수 있습니다.
+   application-docker.yml 으로 DockerFile에 설정해 두었습니다.
+   실행이 안되면 연락주시면 감사하겠습니다.
+   ```
+   
+   DB관련 테이블에 대한 DDL 파일을 소스 디렉토리 안에 넣어주세요.
+   [DDL 링크](https://github.com/ShipJH/ph-cafe/blob/main/DB-DDL.md)   
+   (링크가 접속이 안된다면 소스 최상단의 DB-DDL.md 파일을 참고해주세요)  
+   테스트 케이스를 작성해주세요. -> 간단히 작성하였습니다.  
+   JWT토큰을 발행해서 인증을 제어하는 방식으로 구현해주세요. -> 구현하였습니다.  
+   API는 아래의 custom response json 형식으로 반환되야합니다.(204 No Content 제외) -> 구현 하였습니다.  
   
   
 

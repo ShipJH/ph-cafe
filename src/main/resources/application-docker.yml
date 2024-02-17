@@ -1,0 +1,3 @@
+spring:
+  datasource:
+    url: jdbc:mysql://host.docker.internal:3306/ph-cafe?useSSL=false
